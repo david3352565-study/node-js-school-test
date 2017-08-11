@@ -67,11 +67,13 @@ MyForm.prototype.emailValidating = function(emailValue) {
 
 // Валидация телефона
 MyForm.prototype.phoneValidating = function(phoneValue) {
-	let numArray = phoneValue.replace(/[^0-9]/gim, '').split(''),
-		sumNum = 0;
+	let numArray = phoneValue.replace(/[^0-9]/gim, '').split('');
 	if (numArray.length != 11) return false;
-	numArray.forEach(elem => (sumNum += +elem));
-	return sumNum <= 30 ? true : false;
+	return numArray.reduce((prev, curr) => {
+		return +prev + +curr;
+	}) <= 30
+		? true
+		: false;
 };
 
 MyForm.prototype.submit = function() {
