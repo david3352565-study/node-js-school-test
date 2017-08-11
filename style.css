@@ -1,0 +1,28 @@
+#myForm {
+	width: 300px;
+	margin: 50px auto;
+}
+
+#myForm input {
+	display: block;
+	margin: 10px auto;
+	width: 100%;
+	padding: 5px 5px;
+	font-size: 15px;
+	box-sizing: border-box;
+	border: 1px solid #eee;
+}
+
+#myForm button {
+	display: block;
+	width: 100%;
+	padding: 8px;
+	font-size: 14px;
+	margin: 20px auto;
+	border: none;
+	background-color: #00cbed;
+}
+
+.error {
+	border: 1px solid red !important;
+}
