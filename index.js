@@ -46,13 +46,9 @@ MyForm.prototype.validate = function() {
 		errorFields.push('phone');
 	} else this.phone.classList.remove('error');
 	if (errorFields.length > 0) {
-		errorFields.forEach(name => this.error(this[name]));
+		errorFields.forEach(name => (this[name].className += ' error'));
 	}
 	return { isValid: isValid, errorFields: errorFields };
-};
-
-MyForm.prototype.error = function(elem) {
-	elem.className += ' error';
 };
 
 // Валидация имени
