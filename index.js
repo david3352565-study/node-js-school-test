@@ -47,7 +47,7 @@ MyForm.prototype.validate = function() {
 		errorFields.push('phone');
 	} else this.phone.classList.remove('error');
 	if (errorFields.length > 0) {
-		errorFields.forEach(name => (this[name].className += ' error'));
+		errorFields.forEach(name => this[name].classList.add('error'));
 	}
 	return { isValid: isValid, errorFields: errorFields };
 };
@@ -78,7 +78,7 @@ MyForm.prototype.phoneValidating = function(phoneValue) {
 };
 
 MyForm.prototype.makeRequest = function() {
-	var xhr = new XMLHttpRequest();
+	let xhr = new XMLHttpRequest();
 	let action = this.form.getAttribute('action');
 	xhr.open('GET', action);
 
@@ -92,12 +92,13 @@ MyForm.prototype.makeRequest = function() {
 		} else {
 			let resp = JSON.parse(xhr.responseText);
 			if (resp.status == 'success') {
-				this.resultContainer.className += ' success';
+				this.resultContainer.classList.add('success');
 				this.resultContainer.innerHTML = 'Success';
 			} else if (resp.status == 'error') {
-				this.resultContainer.className += ' error';
+				this.resultContainer.classList.add('error');
 				this.resultContainer.innerHTML = resp.reason;
 			} else if (resp.status == 'progress') {
+				this.resultContainer.classList.add('progress');
 				setTimeout(this.makeRequest.bind(this), resp.timeout);
 			}
 		}
@@ -105,6 +106,7 @@ MyForm.prototype.makeRequest = function() {
 };
 
 MyForm.prototype.submit = function() {
+	console.log(this);
 	let validation = this.validate();
 	if (validation.isValid) {
 		this.button.setAttribute('disabled', 'disabled');
@@ -113,3 +115,4 @@ MyForm.prototype.submit = function() {
 };
 
 let form = new MyForm('myForm');
+//console.log(form);
