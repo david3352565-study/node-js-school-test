@@ -4,6 +4,7 @@ function MyForm(id) {
 	this.email = this.form.querySelector('[name="email"]');
 	this.phone = this.form.querySelector('[name="phone"]');
 	this.button = this.form.querySelector('#submitButton');
+	this.resultContainer = this.form.querySelector('#resultContainer');
 	this.button.onclick = this.submit.bind(this);
 	this.phone.onfocus = function() {
 		var phoneNumber = new PhoneMask(this, {
@@ -68,16 +69,47 @@ MyForm.prototype.emailValidating = function(emailValue) {
 // Валидация телефона
 MyForm.prototype.phoneValidating = function(phoneValue) {
 	let numArray = phoneValue.replace(/[^0-9]/gim, '').split('');
-	if (numArray.length != 11) return false;
-	return numArray.reduce((prev, curr) => {
+	return numArray.length == 11 &&
+	numArray.reduce((prev, curr) => {
 		return +prev + +curr;
 	}) <= 30
 		? true
 		: false;
 };
 
+MyForm.prototype.makeRequest = function() {
+	var xhr = new XMLHttpRequest();
+	let action = this.form.getAttribute('action');
+	xhr.open('GET', action);
+
+	xhr.send();
+
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState != 4) return;
+
+		if (xhr.status != 200) {
+			console.log(xhr.status + ': ' + xhr.statusText);
+		} else {
+			let resp = JSON.parse(xhr.responseText);
+			if (resp.status == 'success') {
+				this.resultContainer.className += ' success';
+				this.resultContainer.innerHTML = 'Success';
+			} else if (resp.status == 'error') {
+				this.resultContainer.className += ' error';
+				this.resultContainer.innerHTML = resp.reason;
+			} else if (resp.status == 'progress') {
+				setTimeout(this.makeRequest.bind(this), resp.timeout);
+			}
+		}
+	}.bind(this);
+};
+
 MyForm.prototype.submit = function() {
-	console.log(this.validate());
+	let validation = this.validate();
+	if (validation.isValid) {
+		this.button.setAttribute('disabled', 'disabled');
+		this.makeRequest();
+	}
 };
 
 let form = new MyForm('myForm');

@@ -21,8 +21,17 @@
 	margin: 20px auto;
 	border: none;
 	background-color: #00cbed;
+	cursor: pointer;
+}
+
+#resultContainer {
+	text-align: center;
 }
 
 .error {
 	border: 1px solid red !important;
+}
+
+.success {
+	border: 1px solid green !important;
 }
