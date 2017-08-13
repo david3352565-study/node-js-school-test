@@ -35,18 +35,16 @@ MyForm.prototype.validate = function() {
 		isValid = true,
 		errorFields = [];
 	if (!this.nameValidating(data.fio)) {
-		isValid = false;
 		errorFields.push('fio');
 	} else this.fio.classList.remove('error');
 	if (!this.emailValidating(data.email)) {
-		isValid = false;
 		errorFields.push('email');
 	} else this.email.classList.remove('error');
 	if (!this.phoneValidating(data.phone)) {
-		isValid = false;
 		errorFields.push('phone');
 	} else this.phone.classList.remove('error');
 	if (errorFields.length > 0) {
+		isValid = false;
 		errorFields.forEach(name => this[name].classList.add('error'));
 	}
 	return { isValid: isValid, errorFields: errorFields };
@@ -54,21 +52,22 @@ MyForm.prototype.validate = function() {
 
 // Валидация имени
 MyForm.prototype.nameValidating = function(nameValue) {
-	let arrNames = nameValue.split(' ').filter(el => {
-		return el.replace(/[^A-Za-zА-Яа-яё]/gim, '');
-	});
-	return arrNames.length == 3;
+	let pattern = /[\wа-яё]+/gi;
+	return nameValue.match(pattern)
+		? nameValue.match(pattern).length == 3
+		: false;
 };
 
 // Валидация email
 MyForm.prototype.emailValidating = function(emailValue) {
-	const pattern = /[a-zA-Z0-9.+@]+@(ya\.ru|(yandex\.(ru|ua|by|kz|com)))/;
+	const pattern = /[a-zA-Z0-9.+@]+@(ya\.ru|(yandex\.(ru|ua|by|kz|com))) *$/;
 	return emailValue.match(pattern);
 };
 
 // Валидация телефона
 MyForm.prototype.phoneValidating = function(phoneValue) {
 	let numArray = phoneValue.replace(/[^0-9]/gim, '').split('');
+	console.log(numArray);
 	return numArray.length == 11 &&
 	numArray.reduce((prev, curr) => {
 		return +prev + +curr;
@@ -106,7 +105,6 @@ MyForm.prototype.makeRequest = function() {
 };
 
 MyForm.prototype.submit = function() {
-	console.log(this);
 	let validation = this.validate();
 	if (validation.isValid) {
 		this.button.setAttribute('disabled', 'disabled');
@@ -115,4 +113,3 @@ MyForm.prototype.submit = function() {
 };
 
 let form = new MyForm('myForm');
-//console.log(form);
