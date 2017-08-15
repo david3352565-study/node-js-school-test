@@ -67,7 +67,6 @@ MyForm.prototype.emailValidating = function(emailValue) {
 // Валидация телефона
 MyForm.prototype.phoneValidating = function(phoneValue) {
 	let numArray = phoneValue.replace(/[^0-9]/gim, '').split('');
-	console.log(numArray);
 	return numArray.length == 11 &&
 	numArray.reduce((prev, curr) => {
 		return +prev + +curr;
@@ -76,12 +75,12 @@ MyForm.prototype.phoneValidating = function(phoneValue) {
 		: false;
 };
 
-MyForm.prototype.makeRequest = function() {
+MyForm.prototype.makeRequest = function(dataJson) {
 	let xhr = new XMLHttpRequest();
 	let action = this.form.getAttribute('action');
-	xhr.open('GET', action);
-
-	xhr.send();
+	xhr.open('POST', action);
+	xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+	xhr.send(dataJson);
 
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState != 4) return;
@@ -98,7 +97,7 @@ MyForm.prototype.makeRequest = function() {
 				this.resultContainer.innerHTML = resp.reason;
 			} else if (resp.status == 'progress') {
 				this.resultContainer.classList.add('progress');
-				setTimeout(this.makeRequest.bind(this), resp.timeout);
+				setTimeout(this.makeRequest.bind(this, dataJson), resp.timeout);
 			}
 		}
 	}.bind(this);
@@ -106,9 +105,10 @@ MyForm.prototype.makeRequest = function() {
 
 MyForm.prototype.submit = function() {
 	let validation = this.validate();
+	let data = JSON.stringify(this.getData());
 	if (validation.isValid) {
 		this.button.setAttribute('disabled', 'disabled');
-		this.makeRequest();
+		this.makeRequest(data);
 	}
 };
 
